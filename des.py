@@ -70,4 +70,8 @@ def pro(msg,key,ip,pc1,pc2,left):
         s1=tra(re,ep)
         s2=kr(key,i)
         s3=xor(s1,s2)
-        s4=sbox(s3)
+        s6=xor(s5,le)
+        le=re
+        re=s6
+    s7=re+le
+    return tra(s7,iip)
