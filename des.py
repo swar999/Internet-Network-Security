@@ -71,4 +71,3 @@ def pro(msg,key,ip,pc1,pc2,left):
         s2=kr(key,i)
         s3=xor(s1,s2)
         s4=sbox(s3)
-
