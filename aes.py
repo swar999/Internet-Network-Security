@@ -15,7 +15,6 @@ def xor(box1,box2):
         for __ in range(4):
             c1=hex(int("0x"+(box1[_][__])[0:1],16) ^ int("0x"+(box2[_][__])[0:1],16))[2:]
             c2=hex(int("0x"+(box1[_][__])[1:2],16) ^ int("0x"+(box2[_][__])[1:2],16))[2:]
-            # print(c1,c2,c1+c2)
             s.append(c1+c2)
         s1.insert(_,s)
     return s1
@@ -25,7 +24,6 @@ def SubBytes(box,sbox):
         s=[]
         for __ in range(4):
             c1,c2=int("0x"+box[_][__][:1],16),int("0x"+box[_][__][1:2],16)
-            # print(c1,c2)
             s.append(sbox[c1][c2])
         s1.insert(_,s)
     return s1
@@ -35,28 +33,37 @@ def ShiftRows(box):
         s=["","","",""]
         for __ in range(4):
             ___=__-_
-            # print(___)
             if(___<0):
                 ___=___+4
-            # print(___)
             s[___]=box[_][__]
-        # print(" ")
         s1.insert(_,s)
     return s1
+def mult(b1):
+    b1="0x"+b1
+    b1=bin(int(b1,16))[2:].zfill(8)
+    if b1[0]=="1":
+        b1="0b"+b1[1:]+0
+        b2="0x1b"
+        b1=hex(int(b1,2) ^ int(b2,16))[2:].zfill(2)
+        return b1
+    return hex(int("0b"+b1,2))[2:].zfill(2)
 def MixColumns(box):
     m=[['02','03','01','01'],['01','02','03','01'],['01','01','02','03'],['03','01','01','02']]
     # s1=[]
     for _ in range(4):
+        b=[]
+        for __ in range(4):
+            b.insert(__,box[__][_]) 
         c1=0
         for __ in range(4):
-            # c1=(int("0x"+(m[_][__])[0:1],16) * int("0x"+(box[__][_])[0:1],16)) * 10
-            # c2=int("0x"+(m[_][__])[1:2],16) * int("0x"+(box[__][_])[1:2],16)
-            # c3=hex(c1+c2)[2:]
-            c1^=(int("0x"+(m[_][__]),16) * int("0x"+(box[__][_]),16))
-            # print(c1)
-        print(hex(c1))
-
+            if m[_][__]=="02":
+                c1+=int("0x"+mult(b[__]),16)
+            elif m[_][__]=="03":
+                c1+=int("0x"+mult(b[__]),16) + int("0x"+b[__],16)
+            elif m[_][__]=="01":
+                c1+=int("0x"+b[__],16)
         
+
 # msg=input("enter the number(128 bit) msg in hex form")
 # key=input("enter the number(128 bit) msg in hex form")
 msg="328831e0435a3137f6309807a88da234"
