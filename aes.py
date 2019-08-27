@@ -8,6 +8,8 @@ def texttobox(text):
             ___+=2
         s1.insert(_,s)
     return(s1)
+
+
 def xor(box1,box2):
     s1=[]
     for _ in range(4):
@@ -18,6 +20,8 @@ def xor(box1,box2):
             s.append(c1+c2)
         s1.insert(_,s)
     return s1
+
+
 def SubBytes(box,sbox):
     s1=[]
     for _ in range(4):
@@ -27,6 +31,8 @@ def SubBytes(box,sbox):
             s.append(sbox[c1][c2])
         s1.insert(_,s)
     return s1
+
+
 def ShiftRows(box):
     s1=[]
     for _ in range(4):
@@ -38,34 +44,52 @@ def ShiftRows(box):
             s[___]=box[_][__]
         s1.insert(_,s)
     return s1
+
+
 def mult(b1):
     b1="0x"+b1
     b1=bin(int(b1,16))[2:].zfill(8)
-    if b1[0]=="1":
-        b1="0b"+b1[1:]+0
+    b=b1[0]
+    b1 = "0b" + b1[1:] + "0"
+    if b=="1":
         b2="0x1b"
         b1=hex(int(b1,2) ^ int(b2,16))[2:].zfill(2)
         return b1
-    return hex(int("0b"+b1,2))[2:].zfill(2)
+    return hex(int(b1,2))[2:].zfill(2)
+
+
 def MixColumns(box):
     m=[['02','03','01','01'],['01','02','03','01'],['01','01','02','03'],['03','01','01','02']]
-    # s1=[]
+    s1=[]
     for _ in range(4):
         b=[]
         for __ in range(4):
-            b.insert(__,box[__][_]) 
-        c1=0
+            b.insert(__,box[__][_])
+        # print(b)
+        s = []
+        for ___ in range(4):
+            c1=0
+            for __ in range(4):
+                if m[___][__]=="02":
+                    c1^=int("0x"+mult(b[__]),16)
+                elif m[___][__]=="03":
+                    c1^=int("0x"+mult(b[__]),16) ^ int("0x"+b[__],16)
+                elif m[___][__]=="01":
+                    c1^=int("0x"+b[__],16)
+                # print(hex(c1))
+            s.insert(___,hex(c1)[2:].zfill(2))
+            # print(s)
+        s1.insert(_,s)
+    s2=[]
+    for _ in range(4):
+        s=[]
         for __ in range(4):
-            if m[_][__]=="02":
-                c1+=int("0x"+mult(b[__]),16)
-            elif m[_][__]=="03":
-                c1+=int("0x"+mult(b[__]),16) + int("0x"+b[__],16)
-            elif m[_][__]=="01":
-                c1+=int("0x"+b[__],16)
-        
+            s.append(s1[__][_])
+        s2.insert(_,s)
+    return s2
 
-# msg=input("enter the number(128 bit) msg in hex form")
-# key=input("enter the number(128 bit) msg in hex form")
+
+
 msg="328831e0435a3137f6309807a88da234"
 key="2b28ab097eaef7cf15d2154f16a6883c"
 msgbox=texttobox(msg)
@@ -78,4 +102,5 @@ b=SubBytes(a,sbox)
 # print(b)
 c=ShiftRows(b)
 # print(c)
-MixColumns(c)
+d=MixColumns(c)
+print(d)
