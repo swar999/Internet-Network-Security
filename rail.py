@@ -1,16 +1,34 @@
 s=input("enter the mas=")
 k=int(input("enter the key="))
+# s="helloworld"
+# k=4
 l=[[] for j in range(k)]
-print(l)
-for i in range(1,len(s),2*k-1):
-    for j in range(1,k):
-        print(j)
-        l[j-1].append(s[i+j-2])
-        print(l)
-    for j in range(k,2*k-1):
-        print(j)
-        m=0
-        l[j-m-1].append(s[j+i-2])
-        m+=1
-        print(l)
-print(l)
+flag=0
+for _ in range(0,len(s),(k-1)*2):
+    for __ in range(0,k):
+        if(_+__>=len(s)):
+            flag=1
+            break
+        l[__].append(s[__+_])
+    if(flag==1):
+        break
+    else:
+        pass
+    p=k-1
+    for ___ in range(k,2*k-2):
+        if(_+___>=len(s)):
+            flag=1
+            break
+        l[p-1].append(s[___+_])
+        p=p-1
+        
+    if(flag==1):
+        break
+    else:
+        pass
+e=""
+for _ in range(len(l)):
+    for __ in range(len(l[_])):
+        e+=str(l[_][__])
+            
+print(e)
